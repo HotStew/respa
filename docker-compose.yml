@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  postgis:
+    container_name: huvaja_pg
+    image: postgis/postgis:12-2.5-alpine
+    environment:
+      POSTGRES_USER: respa
+      POSTGRES_PASSWORD: respa
+      POSTGRES_DB: respa
+    volumes:
+      - huvaja-pg-data:/var/lib/postgresql/data
+      - ./pg.sql:/docker-entrypoint-initdb.d/pg.sql
+
+  memcache:
+    container_name: huvaja_memcached
+    image: memcached:alpine3.14
+    ports:
+      - "11211:11211"
+
+  huvaja_backend:
+    container_name: huvaja_backend
+    build:
+      context: .
+      target: development
+    environment:
+      DATABASE_HOST: postgis
+      DATABASE_PORT: 5432
+      DATABASE_URL: postgis://respa:respa@postgis:5432/respa
+      WAIT_FOR_DATABASE: 1
+      CACHE_URL: memcache://memcache:11211?key_prefix=respa-dev-
+      DEV_SERVER: 1
+      DEBUG: 1
+      APPLY_MIGRATIONS: 1
+    volumes:
+      - .:/app
+    depends_on:
+      - postgis
+    ports:
+      - "8000:8000"
+
+volumes:
+  huvaja-pg-data:
