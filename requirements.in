@@ -19,6 +19,7 @@ easy_thumbnails
 django-helusers
 django-allauth
 djangorestframework-jwt
+django-storages[google]
 pyjwt
 django-hstore
 XlsxWriter
@@ -42,3 +43,4 @@ django-reversion
 daemonize
 django-environ
 sentry-sdk
+uwsgi
