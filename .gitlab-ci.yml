@@ -1,0 +1,24 @@
+include:
+  - project: anders/ci-configuration
+    ref: v3
+    file: /.gitlab-ci-base-template.yml
+
+variables:
+  REVIEW_DISABLED: 1
+  STAGING_DISABLED: 1
+
+build:
+  extends: .build
+  only:
+    - hki-huvaja
+
+production:
+  extends: .production
+  variables:
+    K8S_SECRET_STABLE_GCS_BUCKET_NAME: $STABLE_GCS_BUCKET_NAME
+    K8S_SECRET_SMTP_RELAY_HOST: $SMTP_RELAY_HOST
+  only:
+    refs:
+      - migrate-to-k8s
+  except:
+    refs: []
