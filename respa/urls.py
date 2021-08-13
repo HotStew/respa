@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http.response import HttpResponse
 from helusers import admin
 from django.views.generic.base import RedirectView
 
@@ -41,7 +42,15 @@ urlpatterns = [
     url(r'^resource_image/(?P<pk>\d+)$', ResourceImageView.as_view(), name='resource-image-view'),
     url(r'^v1/', include(router.urls)),
     url(r'^v1/reservation/ical/(?P<ical_token>[-\w\d]+).ics$', ICalFeedView.as_view(), name='ical-feed'),
-    url(r'^$', RedirectView.as_view(url='v1/'))
+    url(r'^$', RedirectView.as_view(url='v1/')),
+    url(
+        r'^healthz',
+        lambda r: HttpResponse()
+    ),
+    url(
+        r'^readiness',
+        lambda r: HttpResponse()
+    ),
 ]
 
 if 'reports' in settings.INSTALLED_APPS:
