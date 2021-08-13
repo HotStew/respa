@@ -38,5 +38,6 @@ elif [[ "$DEV_SERVER" = "1" ]]; then
     # If no command, and the dev server env var is true, run the dev server
     exec ./manage.py runserver 0.0.0.0:8000
 else
+    python manage.py collectstatic --noinput
     exec uwsgi --ini uwsgi.ini
 fi
