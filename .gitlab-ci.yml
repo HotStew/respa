@@ -10,8 +10,9 @@ variables:
 build:
   extends: .build
   only:
-    - merge_requests
-    - hki-huvaja
+    refs:
+      - external_pull_requests
+      - hki-huvaja
 
 production:
   extends: .production
@@ -20,7 +21,7 @@ production:
     K8S_SECRET_SMTP_RELAY_HOST: $SMTP_RELAY_HOST
   only:
     refs:
-      - merge_requests
+      - external_pull_requests
       - hki-huvaja
   except:
     refs: []
