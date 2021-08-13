@@ -17,6 +17,7 @@ build:
 production:
   extends: .production
   variables:
+    DEBUG: 0
     K8S_SECRET_STABLE_GCS_BUCKET_NAME: $STABLE_GCS_BUCKET_NAME
     K8S_SECRET_SMTP_RELAY_HOST: $SMTP_RELAY_HOST
   only:
