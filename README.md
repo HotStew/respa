@@ -74,7 +74,7 @@ Install all packages required for development with pip command:
 ```shell
 sudo -u postgres createuser -P -R -S respa
 sudo -u postgres psql -d template1 -c "create extension hstore;"
-sudo -u postgres createdb -Orespa respa
+sudo -u postgres createdb -O respa respa
 sudo -u postgres psql respa -c "CREATE EXTENSION postgis;"
 ```
 
@@ -183,7 +183,7 @@ Installation with Docker
 docker-compose up
 
 # Import database dump
-cat <name_of_the_sanitized_respa_dump>.sql | docker exec -i respa-db psql -U postgres -d respa
+cat <name_of_the_sanitized_respa_dump>.sql | docker exec -i respa-db psql -U respa -d respa
 ```
 
 Try: http://localhost:8000/ra/resource/
