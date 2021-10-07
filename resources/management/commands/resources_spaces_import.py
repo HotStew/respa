@@ -38,7 +38,11 @@ class Command(BaseCommand):
         )
 
         parser.add_argument(
-            "--default_reservation_metadata_set", help="Default reservation metadata set to use", nargs="?", default="default"
+            "--metadata-set", help="Default reservation metadata set to use", nargs="?", default="default"
+        )
+
+        parser.add_argument(
+            "--prefix-unit", help="Add prefix based on resource_group", nargs="?", default=False
         )
 
     @staticmethod
@@ -53,7 +57,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         file_path = options["file_path"]
-        default_reservation_metadata_set = options["default_reservation_metadata_set"]
+        default_reservation_metadata_set = options["metadata_set"]
+        prefix_unit = options["prefix_unit"]
 
         if not os.path.exists(file_path):
             raise CommandError("File {0} does not exist".format(file_path))
@@ -66,9 +71,14 @@ class Command(BaseCommand):
                     if idx == 0 or not row[Columns.name.value]:
                         continue
 
+                    if prefix_unit:
+                        unit_name = '%s / %s' % (row[Columns.resource_group.value].split(",")[0], row[Columns.unit.value].split(",")[0])
+                    else:
+                        unit_name = row[Columns.unit.value].split(",")[0]
+
                     unit, created = Unit.objects.update_or_create(
                         street_address__iexact=row[Columns.unit.value],
-                        defaults={'name': row[Columns.unit.value].split(",")[0],
+                        defaults={'name': unit_name,
                                 'street_address': row[Columns.unit.value]})
 
                     resource_type, created = ResourceType.objects.update_or_create(
