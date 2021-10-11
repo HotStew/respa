@@ -1,19 +1,47 @@
+# ======================================================================
+FROM python:3.5-alpine AS app-base
+# ======================================================================
+WORKDIR /app
+COPY --chown=appuser:appuser requirements.txt /app
 
-FROM python:3.6
+RUN addgroup -S appuser && adduser -S appuser -G appuser && \
+      apk add --no-cache --virtual .build-deps \
+      build-base \
+      python3-dev \
+      libffi-dev \
+    && apk add --no-cache \
+      bash \
+      coreutils \
+      jpeg-dev \
+      zlib-dev \
+      libxml2-dev \
+      libxslt-dev \
+      gdal-dev \
+      postgresql-dev \
+      pcre-dev \
+      pcre \
+    && pip install --no-cache-dir -r /app/requirements.txt \
+    && rm -r /root/.cache \
+    && apk del .build-deps
 
-WORKDIR /usr/src/app
+ENTRYPOINT ["./docker-entrypoint.sh"]
 
-ENV APP_NAME respa
+# ============================
+FROM app-base AS development
+# ============================
+COPY --chown=appuser:appuser dev-requirements.txt /app
 
-RUN apt-get update && apt-get install -y gdal-bin postgresql-client
+RUN pip install --no-cache-dir -r /app/dev-requirements.txt
 
-COPY requirements.txt .
-COPY deploy/requirements.txt ./deploy/requirements.txt
+USER appuser
+COPY --chown=appuser:appuser . /app/
 
-RUN pip install --no-cache-dir -r deploy/requirements.txt
+EXPOSE 8000/tcp
 
-COPY . .
+# ==========================================================
+FROM app-base AS production
+# ==========================================================
+COPY --chown=appuser:appuser . /app/
 
-RUN mkdir -p www/media
-
-CMD deploy/server.sh
+RUN python manage.py collectstatic
+EXPOSE 8000/tcp

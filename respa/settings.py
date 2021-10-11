@@ -9,6 +9,18 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
+from google.oauth2 import service_account
+
+GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so.27'
+GEOS_LIBRARY_PATH = '/usr/lib/libgeos_c.so.1'
+
+USE_GCLOUD = "STABLE_GCS_BUCKET_NAME" in os.environ and "STABLE_GCS_BUCKET_CREDENTIALS" in os.environ
+if USE_GCLOUD:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        os.getenv("STABLE_GCS_BUCKET_CREDENTIALS")
+    )
+    GS_BUCKET_NAME = os.getenv("STABLE_GCS_BUCKET_NAME")
 
 root = environ.Path(__file__) - 2  # two folders back
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)

@@ -20,6 +20,7 @@ easy_thumbnails
 django-helusers
 django-allauth
 djangorestframework-jwt
+django-storages[google]
 pyjwt
 django-hstore
 XlsxWriter
@@ -49,3 +50,4 @@ jsonschema
 django-admin-json-editor
 factory_boy
 isort
+uwsgi
