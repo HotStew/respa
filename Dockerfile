@@ -1,5 +1,5 @@
 # ======================================================================
-FROM python:3.5-alpine AS app-base
+FROM python:3.6-alpine AS app-base
 # ======================================================================
 WORKDIR /app
 COPY --chown=appuser:appuser requirements.txt /app

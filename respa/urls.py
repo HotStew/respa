@@ -32,12 +32,12 @@ urlpatterns = [
     path('v1/', include(router.urls)),
     re_path(r'v1/reservation/ical/(?P<ical_token>[-\w\d]+).ics$', ICalFeedView.as_view(), name='ical-feed'),
     path('', RedirectView.as_view(url='v1/')),
-    url(
-        r'^healthz',
+    path(
+        'healthz/',
         lambda r: HttpResponse()
     ),
-    url(
-        r'^readiness',
+    path(
+        'readiness/',
         lambda r: HttpResponse()
     ),
 ]
