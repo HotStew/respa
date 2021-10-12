@@ -1,28 +1,17 @@
 # ======================================================================
-FROM python:3.6-alpine AS app-base
+FROM python:3.6 AS app-base
 # ======================================================================
 WORKDIR /app
 COPY --chown=appuser:appuser requirements.txt /app
 
-RUN addgroup -S appuser && adduser -S appuser -G appuser && \
-      apk add --no-cache --virtual .build-deps \
-      build-base \
-      python3-dev \
-      libffi-dev \
-    && apk add --no-cache \
-      bash \
-      coreutils \
-      jpeg-dev \
-      zlib-dev \
-      libxml2-dev \
-      libxslt-dev \
-      gdal-dev \
-      postgresql-dev \
-      pcre-dev \
-      pcre \
-    && pip install --no-cache-dir -r /app/requirements.txt \
-    && rm -r /root/.cache \
-    && apk del .build-deps
+RUN groupadd -g 1000 appuser && useradd -g 1000 -l -M -s /bin/false -u 1000 appuser && \
+      apt-get update && apt-get install -y \
+      gdal-bin \
+      postgresql-client && \
+      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false && \
+      rm -rf /var/lib/apt/lists/* && \
+      rm -rf /var/cache/apt/archives \
+    && pip install --no-cache-dir -r /app/requirements.txt
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
