@@ -125,7 +125,6 @@ class CPUCeeposProvider(PaymentProvider):
                         product.get_price_for_reservation(reservation)
                     ),
                     "Description": product.name,
-                    "Taxcode": get_product_taxcode(product),
                 }
             )
             payload["Products"] = items
