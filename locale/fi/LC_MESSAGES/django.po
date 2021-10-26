@@ -997,8 +997,8 @@ msgstr "Lyhin varausaika"
 msgid "Maximum reservation time"
 msgstr "Pisin varausaika"
 
-msgid "Slot size for reservation time"
-msgstr "Varausajan välin koko"
+msgid "Slot size for reservation time in calendar view"
+msgstr "Varausaikavälin koko kalenterinäkymässä"
 
 msgid "Equipment"
 msgstr "Varustelut"

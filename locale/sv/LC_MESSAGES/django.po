@@ -994,8 +994,8 @@ msgstr "Minsta bokningstid"
 msgid "Maximum reservation time"
 msgstr "Längsta bokningstid"
 
-msgid "Slot size for reservation time"
-msgstr "Spårstorlek för bokningstid"
+msgid "Slot size for reservation time in calendar view"
+msgstr "Spårstorlek för bokningstid i kalendervy"
 
 msgid "Equipment"
 msgstr "Utrustning"
