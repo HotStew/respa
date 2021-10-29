@@ -210,7 +210,6 @@ def test_payload_add_products_success(payment_provider, order_with_products):
         assert "Amount" in product
         assert "Price" in product
         assert "Description" in product
-        assert "Taxcode" in product
 
 
 def test_payload_add_customer_success(payment_provider, order_with_products):
@@ -240,7 +239,7 @@ def test_payload_add_checksum_success(payment_provider):
                 "Price": 100,
                 "Description": "Product-specific info",
             },
-            {"Code": "1212", "Price": 150, "Taxcode": "10"},
+            {"Code": "1212", "Price": 150},
         ],
         "Email": "charlie.customer@example.com",
         "FirstName": "Charlie",
