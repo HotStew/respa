@@ -215,7 +215,7 @@ class Resource(ModifiableModel, AutoIdentifiedModel):
     min_period = models.DurationField(verbose_name=_('Minimum reservation time'),
                                       default=datetime.timedelta(minutes=30))
     max_period = models.DurationField(verbose_name=_('Maximum reservation time'), null=True, blank=True)
-    slot_size = models.DurationField(verbose_name=_('Slot size for reservation time'),
+    slot_size = models.DurationField(verbose_name=_('Slot size for reservation time in calendar view'),
                                      default=datetime.timedelta(minutes=30))
 
     equipment = EquipmentField(Equipment, through='ResourceEquipment', verbose_name=_('Equipment'))
