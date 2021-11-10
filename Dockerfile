@@ -1,19 +1,34 @@
+# ======================================================================
+FROM python:3.8-buster AS app-base
+# ======================================================================
+WORKDIR /app
 
-FROM python:3.6
+COPY --chown=appuser:appuser requirements.txt /app
+RUN groupadd --gid 1000 appuser \
+&& useradd --uid 1000 --gid appuser --create-home --shell /bin/bash appuser \
+&& apt-get update \
+&& apt-get install -y \
+    gdal-bin \
+    postgresql-client \
+&& curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+&& apt-get install -y nodejs \
+&& pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /usr/src/app
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
-ENV APP_NAME respa
+# ======================================================================
+FROM app-base AS development
+# ======================================================================
+COPY --chown=appuser:appuser dev-requirements.txt /app
+RUN pip install --no-cache-dir -r dev-requirements.txt
+COPY --chown=appuser:appuser . /app/
+RUN ./build-resources
+USER appuser
+EXPOSE 8000/tcp
 
-RUN apt-get update && apt-get install -y gdal-bin postgresql-client
-
-COPY requirements.txt .
-COPY deploy/requirements.txt ./deploy/requirements.txt
-
-RUN pip install --no-cache-dir -r deploy/requirements.txt
-
-COPY . .
-
-RUN mkdir -p www/media
-
-CMD deploy/server.sh
+# ====================================================
+FROM app-base AS production
+# ====================================================
+COPY --chown=appuser:appuser . /app/
+RUN python manage.py collectstatic
+EXPOSE 8000/tcp
