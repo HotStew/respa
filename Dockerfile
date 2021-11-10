@@ -11,6 +11,7 @@ RUN set -eux; \
     apt-get install -y \
         gdal-bin \
         postgresql-client \
+        gettext \
     ; \
     curl -sL https://deb.nodesource.com/setup_12.x | bash -; \
     apt-get install -y nodejs; \
@@ -34,6 +35,8 @@ EXPOSE 8000/tcp
 FROM app-base AS production
 # ====================================================
 COPY --chown=appuser:appuser . /app/
-RUN python manage.py collectstatic
 USER appuser
+RUN set -eux; \
+    python manage.py collectstatic; \
+    python manage.py compilemessages
 EXPOSE 8000/tcp
