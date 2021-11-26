@@ -7,6 +7,7 @@ COPY --chown=appuser:appuser requirements.txt /app
 RUN set -eux; \
     groupadd --gid 1000 appuser; \
     useradd --uid 1000 --gid appuser --create-home --shell /bin/bash appuser; \
+    chown -R appuser:appuser /app; \
     apt-get update; \
     apt-get install -y \
         gdal-bin \
