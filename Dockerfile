@@ -28,14 +28,15 @@ FROM app-base AS development
 COPY --chown=appuser:appuser dev-requirements.txt /app
 RUN pip install --no-cache-dir -r dev-requirements.txt
 COPY --chown=appuser:appuser . /app/
-RUN ./build-resources
 USER appuser
+RUN ./build-resources
 EXPOSE 8000/tcp
 
 # ====================================================
 FROM app-base AS production
 # ====================================================
 COPY --chown=appuser:appuser . /app/
+COPY --from=development --chown=appuser:appuser /app/respa_admin/static/respa_admin /app/respa_admin/static/respa_admin
 USER appuser
 RUN set -eux; \
     python manage.py collectstatic; \
