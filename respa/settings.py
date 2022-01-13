@@ -248,6 +248,7 @@ PARLER_LANGUAGES = {
 USE_GCLOUD = env.str('STABLE_GCS_BUCKET_NAME') and env.str('STABLE_GCS_BUCKET_CREDENTIALS')
 if USE_GCLOUD:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    THUMBNAIL_DEFAULT_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     GS_BUCKET_NAME = env.str('STABLE_GCS_BUCKET_NAME')
     GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
         env.str('STABLE_GCS_BUCKET_CREDENTIALS')
