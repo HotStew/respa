@@ -6,6 +6,7 @@ include:
 variables:
   REVIEW_DISABLED: 1
   STAGING_DISABLED: 1
+  TEST: 1
 
 build:
   extends: .build
