@@ -6,6 +6,7 @@ import os
 import subprocess
 import environ
 import sentry_sdk
+from google.oauth2 import service_account
 from sentry_sdk.integrations.django import DjangoIntegration
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ImproperlyConfigured
@@ -51,6 +52,8 @@ env = environ.Env(
     STATIC_ROOT=(environ.Path(), root('static')),
     MEDIA_URL=(str, '/media/'),
     STATIC_URL=(str, '/static/'),
+    STABLE_GCS_BUCKET_NAME=(str, ''),
+    STABLE_GCS_BUCKET_CREDENTIALS=(str, ''),
     SENTRY_DSN=(str, ''),
     SENTRY_ENVIRONMENT=(str, ''),
     COOKIE_PREFIX=(str, 'respa'),
@@ -242,6 +245,13 @@ PARLER_LANGUAGES = {
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
+USE_GCLOUD = env.str('STABLE_GCS_BUCKET_NAME') and env.str('STABLE_GCS_BUCKET_CREDENTIALS')
+if USE_GCLOUD:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = env.str('STABLE_GCS_BUCKET_NAME')
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        env.str('STABLE_GCS_BUCKET_CREDENTIALS')
+    )
 
 STATIC_URL = env('STATIC_URL')
 MEDIA_URL = env('MEDIA_URL')

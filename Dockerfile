@@ -1,19 +1,44 @@
+# ======================================================================
+FROM python:3.8-buster AS app-base
+# ======================================================================
+WORKDIR /app
 
-FROM python:3.6
+COPY --chown=appuser:appuser requirements.txt /app
+RUN set -eux; \
+    groupadd --gid 1000 appuser; \
+    useradd --uid 1000 --gid appuser --create-home --shell /bin/bash appuser; \
+    chown -R appuser:appuser /app; \
+    apt-get update; \
+    apt-get install -y \
+        gdal-bin \
+        postgresql-client \
+        gettext \
+    ; \
+    curl -sL https://deb.nodesource.com/setup_12.x | bash -; \
+    apt-get install -y nodejs; \
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    rm -rf /var/lib/apt/lists/*; \
+    rm -rf /var/cache/apt/archives; \
+    pip install --no-cache-dir -r requirements.txt
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
-WORKDIR /usr/src/app
+# ======================================================================
+FROM app-base AS development
+# ======================================================================
+COPY --chown=appuser:appuser dev-requirements.txt /app
+RUN pip install --no-cache-dir -r dev-requirements.txt
+COPY --chown=appuser:appuser . /app/
+USER appuser
+RUN ./build-resources
+EXPOSE 8000/tcp
 
-ENV APP_NAME respa
-
-RUN apt-get update && apt-get install -y gdal-bin postgresql-client
-
-COPY requirements.txt .
-COPY deploy/requirements.txt ./deploy/requirements.txt
-
-RUN pip install --no-cache-dir -r deploy/requirements.txt
-
-COPY . .
-
-RUN mkdir -p www/media
-
-CMD deploy/server.sh
+# ====================================================
+FROM app-base AS production
+# ====================================================
+COPY --chown=appuser:appuser . /app/
+COPY --from=development --chown=appuser:appuser /app/respa_admin/static/respa_admin /app/respa_admin/static/respa_admin
+USER appuser
+RUN set -eux; \
+    python manage.py collectstatic; \
+    python manage.py compilemessages
+EXPOSE 8000/tcp

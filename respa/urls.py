@@ -3,6 +3,7 @@ from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
 from tamusers import admin
+from django.http.response import HttpResponse
 from django.views.generic.base import RedirectView
 
 from resources.api import RespaAPIRouter
@@ -31,6 +32,8 @@ urlpatterns = [
     path('v1/', include(router.urls)),
     re_path(r'v1/reservation/ical/(?P<ical_token>[-\w\d]+).ics$', ICalFeedView.as_view(), name='ical-feed'),
     path('', RedirectView.as_view(url='v1/')),
+    path('healthz/', lambda r: HttpResponse()),
+    path('readiness/', lambda r: HttpResponse()),
 ]
 
 if 'reports' in settings.INSTALLED_APPS:
