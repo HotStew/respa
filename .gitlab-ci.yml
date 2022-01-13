@@ -1,0 +1,24 @@
+include:
+  - project: anders/ci-configuration
+    ref: v3
+    file: /.gitlab-ci-base-template.yml
+
+variables:
+  REVIEW_DISABLED: 1
+  STAGING_DISABLED: 1
+
+build:
+  extends: .build
+  only:
+    refs:
+      - external_pull_requests
+      - tre-varaamo
+
+production:
+  extends: .production
+  only:
+    refs:
+      - external_pull_requests
+      - tre-varaamo
+  except:
+    refs: []
