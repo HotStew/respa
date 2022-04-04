@@ -43,10 +43,11 @@ urlpatterns = [
 ]
 
 if 'reports' in settings.INSTALLED_APPS:
-    from reports.api import DailyReservationsReport, ReservationDetailsReport
+    from reports.api import DailyReservationsReport, ReservationDetailsReport, ReservationRateReport
     urlpatterns.extend([
         path('reports/daily_reservations/', DailyReservationsReport.as_view(), name='daily-reservations-report'),
         path('reports/reservation_details/', ReservationDetailsReport.as_view(), name='reservation-details-report'),
+        path('reports/reservation_rate/', ReservationRateReport.as_view(), name='reservation-rate-report'),
     ])
 
 if settings.RESPA_PAYMENTS_ENABLED:

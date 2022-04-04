@@ -1702,3 +1702,9 @@ msgid ""
 msgstr ""
 "Määrää onko käyttäjä yleinen ylläpitäjä, jolla on erityisoikeuksia moniin "
 "Respan kohteisiin. Tämä on lähes yhtä vaikutusvaltainen kuin pääkäyttäjä."
+
+msgid "Missing unit id(s)"
+msgstr "Kiinteistöt puuttuvat"
+
+msgid "End time must be after begin time"
+msgstr "Alkamisajan täytyy olla ennen päättymisaikaa"
