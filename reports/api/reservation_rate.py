@@ -144,9 +144,10 @@ class ReservationRateReportExcelRenderer(renderers.BaseRenderer):
 
         summary_headers = [
             (0, 0, "Kiinteistö"),
-            (0, 1, "Ajankohta"),
-            (0, 2, "Aikaväli"),
-            (0, 3, "Kiinteistön varausaste"),
+            (0, 1, "Katuosoite"),
+            (0, 2, "Ajankohta"),
+            (0, 3, "Aikaväli"),
+            (0, 4, "Kiinteistön varausaste"),
             (3, 0, "Resurssin nimi"),
             (3, 1, "Tilatyyppi"),
             (3, 2, "Varatut ajat yhteensä"),
@@ -162,17 +163,19 @@ class ReservationRateReportExcelRenderer(renderers.BaseRenderer):
         for unit in data["units"]:
             row_pos = 0
 
-            sheet = workbook.add_worksheet(unit["name"])
-
-            sheet.set_column(0, 4, 40) # Sets width of columns
+            # Excel sheet names have 31 character limit.
+            sheet = workbook.add_worksheet(unit["name"][-31:])
+            
+            sheet.set_column(0, 5, 40) # Sets width of columns
 
             for header in summary_headers:
                 sheet.write(*header, header_format)
 
             sheet.write(1, 0, unit["name"])
-            sheet.write(1, 1, data["day_period"])
-            sheet.write(1, 2, data["time_period"])
-            sheet.write(1, 3, unit["unit_reservation_rate"])
+            sheet.write(1, 1, unit["street_address"])
+            sheet.write(1, 2, data["day_period"])
+            sheet.write(1, 3, data["time_period"])
+            sheet.write(1, 4, unit["unit_reservation_rate"])
 
             row_pos += 4
 
@@ -327,6 +330,7 @@ class UnitSerializer(serializers.ModelSerializer):
         model = Unit
         fields = (
             "name",
+            "street_address",
             "resources"
         )
 
