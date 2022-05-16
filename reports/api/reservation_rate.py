@@ -1,4 +1,4 @@
-import datetime, io, xlsxwriter
+import datetime, io, re, xlsxwriter
 from collections import namedtuple
 
 from django.db.models import Q
@@ -160,11 +160,16 @@ class ReservationRateReportExcelRenderer(renderers.BaseRenderer):
             (3, "Päättyi"),
         ]
 
+        sheet_name_pattern = re.compile("[\\[\\]:*?/\\\\]")
+
         for unit in data["units"]:
             row_pos = 0
 
-            # Excel sheet names have 31 character limit.
-            sheet = workbook.add_worksheet(unit["name"][-31:])
+            # Removes unallowed characters and limits string length to 31
+            # to avoid errors.
+            sheet_name = re.sub(sheet_name_pattern, "", unit["name"])[-31:]
+
+            sheet = workbook.add_worksheet(sheet_name)
             
             sheet.set_column(0, 5, 40) # Sets width of columns
 
